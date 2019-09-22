@@ -3,6 +3,7 @@ package pl.group.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.group.Entity.Task;
+import pl.group.Repository.FileHandler;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,19 +17,19 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private FileHandler fileHandler;
 
-    private LongSupplier timeSupplier = System::currentTimeMillis;
+    private LongSupplier actualTime = System::currentTimeMillis;
 
 
-    public boolean isExistTask(String pTask) {
-        long currentTime = timeSupplier.getAsLong();
+    public boolean isExistActualTask(String pTask) {
+        long currentTime = actualTime.getAsLong();
         List<Task> tasks = null;
         try {
-            tasks = fileHandler.parseTask();
+            tasks = fileHandler.getAllTasks();
         } catch (IOException e) {
             e.printStackTrace();
         }
         for (Task task : tasks) {
-            if (pTask.equals(task.getName()) && currentTime < task.getStartTime()) {
+            if (pTask.equals(task.getName()) && currentTime <= task.getStartTime() && task.getStopTime() == null) {
                 return true;
             }
         }

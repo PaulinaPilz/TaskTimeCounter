@@ -18,6 +18,6 @@ public class TaskTimeCounterApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		service.isExistTask("task1");
+		service.isExistActualTask("task1");
 	}
 }

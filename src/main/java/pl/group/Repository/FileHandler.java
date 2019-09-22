@@ -1,4 +1,4 @@
-package pl.group.Service;
+package pl.group.Repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
@@ -18,8 +18,7 @@ public class FileHandler {
 
     private final File file = ResourceUtils.getFile("/home/paulina/workspace/task-time-counter/src/main/resources/tasks.json");
 
-    public FileHandler() throws FileNotFoundException {
-    }
+    public FileHandler() throws FileNotFoundException {}
 
 
     public void save(JSONObject object) throws IOException {
@@ -28,7 +27,7 @@ public class FileHandler {
         }
     }
 
-    public List<Task> parseTask() throws IOException {
+    public List<Task> getAllTasks() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         return Arrays.asList(mapper.readValue(file, Task[].class));
     }
