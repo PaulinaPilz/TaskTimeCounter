@@ -30,7 +30,8 @@ public class TaskServiceImplTest {
     @Test
     public void testAddTask_actualTaskExist_noSaveTask() throws IOException {
         //given
-        Task task = new Task("actual", 123442223L, null);
+        Task task = new Task("actual");
+        task.setStartTime(123442223L);
         given(fileHandler.getAllTasks()).willReturn(getTasks());
 
         //when
@@ -43,7 +44,9 @@ public class TaskServiceImplTest {
     @Test
     public void testAddTask_notActualTaskExist_saveTask() throws IOException {
         //given
-        Task task = new Task("notActual", 1234422L, 12344222L);
+        Task task = new Task("notActual");
+        task.setStartTime(1234422L);
+        task.setStopTime(12344222L);
         given(fileHandler.getAllTasks()).willReturn(getTasks());
 
         //when
@@ -56,7 +59,8 @@ public class TaskServiceImplTest {
     @Test
     public void testAddTask_taskThatIsNotExist_saveTask() throws IOException {
         //given
-        Task task = new Task("noExistTask", 123442223L, null);
+        Task task = new Task("noExistTask");
+        task.setStartTime(123442223L);
         given(fileHandler.getAllTasks()).willReturn(getTasks());
 
         //when
@@ -67,8 +71,11 @@ public class TaskServiceImplTest {
     }
 
     private List<Task> getTasks() {
-        Task actualTask = new Task("actual", 123442223L, null);
-        Task notActualTask = new Task("notActual", 1234422L, 12344222L);
+        Task actualTask = new Task("actual");
+        actualTask.setStartTime(123442223L);
+        Task notActualTask = new Task("notActual");
+        notActualTask.setStartTime(1234422L);
+        notActualTask.setStopTime(12344222L);
         return Arrays.asList(actualTask, notActualTask);
     }
 }

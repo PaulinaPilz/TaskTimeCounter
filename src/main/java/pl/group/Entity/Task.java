@@ -5,13 +5,15 @@ public class Task {
     private String name;
     private Long startTime;
     private Long stopTime;
+    private boolean active;
 
     public Task() {}
 
-    public Task(String name, Long startTime, Long stopTime) {
+    public Task(String name) {
         this.name = name;
-        this.startTime = startTime;
-        this.stopTime = stopTime;
+        this.startTime = System.currentTimeMillis();
+        this.stopTime = null;
+        this.active = true;
     }
 
     public Long getStartTime() {
@@ -36,5 +38,13 @@ public class Task {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
