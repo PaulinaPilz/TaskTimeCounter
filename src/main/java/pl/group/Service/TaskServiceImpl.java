@@ -8,6 +8,7 @@ import pl.group.Entity.Task;
 import pl.group.Repository.FileHandler;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,20 +27,30 @@ public class TaskServiceImpl implements TaskService {
                 LOG.info("Task: [" + pTask.getName() + "] already exists");
                 return;
             }
-            fileHandler.saveTask(pTask);
+            changeTaskStatusWhenIsActive();
+            fileHandler.saveToFile(pTask);
         } catch (IOException e) {
             LOG.error("Error while reading the file");
         }
     }
 
-    private boolean isExistActualTask(Task pTask) throws IOException {
-        List<Task> tasks = fileHandler.getAllTasks();
-
-        for (Task task : tasks) {
+    private boolean isExistActualTask(Task pTask) {
+        for (Task task : fileHandler.getTasks()) {
             if (pTask.getName().equals(task.getName()) && pTask.getStartTime() <= task.getStartTime() && task.getStopTime() == null) {
                 return true;
             }
         }
         return false;
+    }
+
+    private void changeTaskStatusWhenIsActive() {
+        List<Task> tasks = new ArrayList<>();
+        for (Task task : fileHandler.getTasks()) {
+            if (task.isActive()) {
+                task.setActive(false);
+            }
+            tasks.add(task);
+        }
+        fileHandler.setTasks(tasks);
     }
 }

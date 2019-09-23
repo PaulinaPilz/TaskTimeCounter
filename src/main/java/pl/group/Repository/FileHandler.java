@@ -18,11 +18,22 @@ public class FileHandler {
 
     private File file;
 
-    public FileHandler() {
+    private List<Task> tasks;
+
+    public FileHandler() throws IOException {
         this.file = new File("tasks.json");
+        this.tasks = laodFile();
     }
 
-    public void saveTask(Task task) throws IOException {
+    public List<Task> getTasks() {
+        return this.tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public void saveToFile(Task task) throws IOException {
         try (RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
             if (raf.length() == 0) {
                 JSONArray ja = new JSONArray(new Object[] { task});
@@ -35,7 +46,7 @@ public class FileHandler {
         }
     }
 
-    public List<Task> getAllTasks() throws IOException {
+    public List<Task> laodFile() throws IOException {
         List<Task> tasks = new ArrayList<>();
         try (RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
             if (raf.length() != 0) {
