@@ -1,5 +1,7 @@
 package pl.group.Service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.group.Entity.Task;
@@ -7,29 +9,34 @@ import pl.group.Repository.FileHandler;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.function.LongSupplier;
 
 
 @Service
 public class TaskServiceImpl implements TaskService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TaskServiceImpl.class);
 
     @Autowired
     private FileHandler fileHandler;
 
-    private LongSupplier actualTime = System::currentTimeMillis;
-
-
-    public boolean isExistActualTask(String pTask) {
-        long currentTime = actualTime.getAsLong();
-        List<Task> tasks = null;
+    @Override
+    public void addTask(Task pTask) {
         try {
-            tasks = fileHandler.getAllTasks();
+            if (isExistActualTask(pTask)) {
+                LOG.info("Task: [" + pTask.getName() + "] already exists");
+                return;
+            }
+            fileHandler.saveTask(pTask);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("Error while reading the file");
         }
+    }
+
+    private boolean isExistActualTask(Task pTask) throws IOException {
+        List<Task> tasks = fileHandler.getAllTasks();
+
         for (Task task : tasks) {
-            if (pTask.equals(task.getName()) && currentTime <= task.getStartTime() && task.getStopTime() == null) {
+            if (pTask.getName().equals(task.getName()) && pTask.getStartTime() <= task.getStartTime() && task.getStopTime() == null) {
                 return true;
             }
         }

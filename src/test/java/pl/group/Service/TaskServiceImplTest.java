@@ -5,19 +5,17 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.util.ResourceUtils;
 import pl.group.Entity.Task;
 import pl.group.Repository.FileHandler;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.LongSupplier;
 
-import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TaskServiceImplTest {
@@ -25,50 +23,47 @@ public class TaskServiceImplTest {
     @Mock
     private FileHandler fileHandler;
 
-    @Mock
-    private LongSupplier timeSupplier;
-
     @InjectMocks
     private TaskServiceImpl tested;
 
 
     @Test
-    public void testIsExistActualTask_actualTaskExist_true() throws IOException {
+    public void testAddTask_actualTaskExist_noSaveTask() throws IOException {
         //given
-        given(timeSupplier.getAsLong()).willReturn(123442223L);
+        Task task = new Task("actual", 123442223L, null);
         given(fileHandler.getAllTasks()).willReturn(getTasks());
 
         //when
-        boolean result = tested.isExistActualTask("actual");
+        tested.addTask(task);
 
         //then
-        assertEquals(true, result);
+        verify(fileHandler, times(0)).saveTask(any());
     }
 
     @Test
-    public void testIsExistActualTask_notActualTaskExist_false() throws IOException {
+    public void testAddTask_notActualTaskExist_saveTask() throws IOException {
         //given
-        given(timeSupplier.getAsLong()).willReturn(1234422L);
+        Task task = new Task("notActual", 1234422L, 12344222L);
         given(fileHandler.getAllTasks()).willReturn(getTasks());
 
         //when
-        boolean result = tested.isExistActualTask("notActual");
+        tested.addTask(task);
 
         //then
-        assertEquals(false, result);
+        verify(fileHandler, times(1)).saveTask(task);
     }
 
     @Test
-    public void testIsExistActualTask_taskThatIsNot_false() throws IOException {
+    public void testAddTask_taskThatIsNotExist_saveTask() throws IOException {
         //given
-        given(timeSupplier.getAsLong()).willReturn(123442223L);
+        Task task = new Task("noExistTask", 123442223L, null);
         given(fileHandler.getAllTasks()).willReturn(getTasks());
 
         //when
-        boolean result = tested.isExistActualTask("noTask");
+        tested.addTask(task);
 
         //then
-        assertEquals(false, result);
+        verify(fileHandler, times(1)).saveTask(task);
     }
 
     private List<Task> getTasks() {

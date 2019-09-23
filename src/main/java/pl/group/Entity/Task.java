@@ -6,6 +6,8 @@ public class Task {
     private Long startTime;
     private Long stopTime;
 
+    public Task() {}
+
     public Task(String name, Long startTime, Long stopTime) {
         this.name = name;
         this.startTime = startTime;
