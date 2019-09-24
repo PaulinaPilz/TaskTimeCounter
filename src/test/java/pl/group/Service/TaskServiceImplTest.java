@@ -37,12 +37,14 @@ public class TaskServiceImplTest {
     @Test
     public void testAddTask_actualTaskExist_noSaveTask() throws IOException {
         //given
-        Task task = new Task("actual");
-        task.setStartTime(123442223L);
-        given(fileHandler.getTasks()).willReturn(getTasks());
+        Task newTask = new Task("actual");
+        newTask.setStartTime(1236662225L);
+        Task oldTask = new Task("actual");
+        oldTask.setStartTime(123442223L);
+        given(fileHandler.getActiveTask()).willReturn(oldTask);
 
         //when
-        tested.addTask(task);
+        tested.addTask(newTask);
 
         //then
         verify(fileHandler, times(0)).saveToFile(any());
@@ -88,7 +90,7 @@ public class TaskServiceImplTest {
         tested.addTask(task);
 
         //then
-        verify(fileHandler, times(1)).setTasks(captor.capture());
+        verify(fileHandler, times(1)).updateTasks(captor.capture());
         assertEquals(false, captor.getValue().get(0).isActive());
     }
 

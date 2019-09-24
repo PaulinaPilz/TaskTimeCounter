@@ -20,17 +20,33 @@ public class FileHandler {
 
     private List<Task> tasks;
 
+    private Task activeTask;
+
     public FileHandler() throws IOException {
         this.file = new File("tasks.json");
         this.tasks = laodFile();
+        this.activeTask = getActiveStatusTask();
+    }
+
+    public Task getActiveTask() {
+        return this.activeTask;
     }
 
     public List<Task> getTasks() {
         return this.tasks;
     }
 
-    public void setTasks(List<Task> tasks) {
+    public void updateTasks(List<Task> tasks) {
         this.tasks = tasks;
+    }
+
+    private Task getActiveStatusTask() {
+        for (Task task: this.tasks) {
+            if (task.isActive()) {
+                return task;
+            }
+        }
+        return null;
     }
 
     public void saveToFile(Task task) throws IOException {

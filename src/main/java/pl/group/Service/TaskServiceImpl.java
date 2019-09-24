@@ -35,8 +35,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private boolean isExistActualTask(Task pTask) {
-        for (Task task : fileHandler.getTasks()) {
-            if (pTask.getName().equals(task.getName()) && pTask.getStartTime() <= task.getStartTime() && task.getStopTime() == null) {
+        Task activeTask = fileHandler.getActiveTask();
+        if (activeTask != null) {
+            if (pTask.getName().equals(activeTask.getName())) {
                 return true;
             }
         }
@@ -51,6 +52,6 @@ public class TaskServiceImpl implements TaskService {
             }
             tasks.add(task);
         }
-        fileHandler.setTasks(tasks);
+        fileHandler.updateTasks(tasks);
     }
 }
